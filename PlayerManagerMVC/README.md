@@ -1,19 +1,11 @@
 ```mermaid
 
 classDiagram
-    class Controller{
-    }
-    class CompareByName{
-    }
     class IView{
         <<Interface>>
     }
-    class Player{
-    }
     class PlayerOrder{
         <<Enumeration>>
-    }
-    class UglyView{
     }
     class IComparable{
         <<Interface>>
