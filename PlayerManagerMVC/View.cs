@@ -7,16 +7,17 @@ namespace PlayerManagerMVC
 {
     public class View : IView
     {
+        
+        private readonly Controller _controller;
 
-        private readonly Controller controller;
+        private readonly List<Player> _playerList;
 
-        private readonly List<Player> players;
-
-        public View(Controller con, List<Player> playerList)
+        public View(Controller controller, List<Player> playerList)
         {
-            controller = con;
-            players = playerList;
+            _controller = controller;
+            _playerList = playerList;
         }
+
 
         public int MainMenu()
         {
@@ -28,7 +29,9 @@ namespace PlayerManagerMVC
 
         }
         public void AfterMenu()
-        {
+        {   
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
 
         }
 
@@ -44,15 +47,16 @@ namespace PlayerManagerMVC
              // Request player name
             Console.Write("Inserir Nome: ");
 
-            string name = Console.ReadLine(); //               => store name
+            //store name
+            string name = Console.ReadLine(); 
 
-            Console.WriteLine();                        // Enter
+            Console.WriteLine();
 
             // Request player score
             Console.Write("Inserir Score: ");
-            score = int.Parse(Console.ReadLine()); //   => store & convert score
+            score = int.Parse(Console.ReadLine()); //store & convert score
 
-            Console.WriteLine();                       // Enter
+            Console.WriteLine();
 
 
             try{ 
@@ -85,6 +89,7 @@ namespace PlayerManagerMVC
                 Console.WriteLine(player);
             }
         }
+
 
         public int AskForMinimumScore()
         {

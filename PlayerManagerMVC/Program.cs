@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 
 namespace PlayerManagerMVC
@@ -36,11 +36,14 @@ namespace PlayerManagerMVC
             Controller con = new Controller(playerList); 
 
 
-            // Instance of View
+            //Instance of View
             IView view = new View(con, playerList);
 
-
             con.Start(view);
+
+
+
+           
 
         }
 
@@ -59,6 +62,15 @@ namespace PlayerManagerMVC
                 new Player("Best player ever", 100),
                 new Player("An even better player", 500)
             };
+        }
+
+        /// <summary>
+        /// Start the player listing program instance
+        /// </summary>
+        private void Start()
+        {
+            // We keep the user's option here
+          
         }
 
         /// <summary>
@@ -159,7 +171,7 @@ namespace PlayerManagerMVC
                 // given value....
                 if (p.Score > minScore)
                 {
-                    // ...return him as a member of the player enumerable
+                    // ...return him as a member of the player enumerable   
                     yield return p;
                 }
             }
@@ -168,38 +180,6 @@ namespace PlayerManagerMVC
         /// <summary>
         ///  Sort player list by the order specified by the user.
         /// </summary>
-        private void SortPlayerList()
-        {
-            PlayerOrder playerOrder;
-
-            Console.WriteLine("Player order");
-            Console.WriteLine("------------");
-            Console.WriteLine(
-                $"{(int)PlayerOrder.ByScore}. Order by score");
-            Console.WriteLine(
-                $"{(int)PlayerOrder.ByName}. Order by name");
-            Console.WriteLine(
-                $"{(int)PlayerOrder.ByNameReverse}. Order by name (reverse)");
-            Console.WriteLine("");
-            Console.Write("> ");
-
-            playerOrder = Enum.Parse<PlayerOrder>(Console.ReadLine());
-
-            switch (playerOrder)
-            {
-                case PlayerOrder.ByScore:
-                    playerList.Sort();
-                    break;
-                case PlayerOrder.ByName:
-                    playerList.Sort(compareByName);
-                    break;
-                case PlayerOrder.ByNameReverse:
-                    playerList.Sort(compareByNameReverse);
-                    break;
-                default:
-                    Console.Error.WriteLine("\n>>> Unknown player order! <<<\n");
-                    break;
-            }
-        }
+       
     }
 }
