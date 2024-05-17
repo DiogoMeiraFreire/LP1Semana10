@@ -35,8 +35,7 @@ namespace PlayerManagerMVC
 
         public void Start(IView view)
         {
-            int option = 0;
-
+            int option;
 
              // Main program loop
             do

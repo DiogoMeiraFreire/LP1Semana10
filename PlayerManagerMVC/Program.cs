@@ -62,15 +62,6 @@ namespace PlayerManagerMVC
         }
 
         /// <summary>
-        /// Start the player listing program instance
-        /// </summary>
-        private void Start()
-        {
-            // We keep the user's option here
-          
-        }
-
-        /// <summary>
         /// Shows the main menu.
         /// </summary>
         private void ShowMenu()
