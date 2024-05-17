@@ -16,7 +16,7 @@ classDiagram
 
     IView <|.. UglyView
     IComparable <|.. Player
-    IComparer <|.. CompareByName
+    IComparer <|.. CompareByName    
 
     CompareByName ..> Player
 
