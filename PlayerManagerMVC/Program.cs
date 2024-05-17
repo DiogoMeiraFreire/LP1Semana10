@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 
 namespace PlayerManagerMVC
@@ -8,20 +8,40 @@ namespace PlayerManagerMVC
     /// </summary>
     public class Program
     {
-        /// <summary>
-        /// The list of all players.
-        /// </summary>
-        private List<Player> playerList;
+        /// The list of all players
+        private readonly List<Player> playerList;
+
+        // Comparer for comparing player by name (alphabetical order)
+        private readonly IComparer<Player> compareByName;
+
+        // Comparer for comparing player by name (reverse alphabetical order)
+        private readonly IComparer<Player> compareByNameReverse;
 
         /// <summary>
         /// Program begins here.
         /// </summary>
-        private static void Main()
+        /// <param name="args">Not used.</param>
+        private static void Main(string[] args)
         {
+
+            // Instance of Model
+            List<Player> playerList = new List<Player>()
+            {
+                new Player("Best player ever", 100),
+                new Player("An even better player", 500)
+            };
+     
+
             // Create a new instance of the player listing program
-            Program prog = new Program();
-            // Start the program instance
-            prog.Start();
+            Controller con = new Controller(playerList); 
+
+
+            // Instance of View
+            IView view = new View(con, playerList);
+
+
+            con.Start(view);
+
         }
 
         /// <summary>
@@ -29,6 +49,10 @@ namespace PlayerManagerMVC
         /// </summary>
         private Program()
         {
+            // Initialize player comparers
+            compareByName = new CompareByName(true);
+            compareByNameReverse = new CompareByName(false);
+
             // Initialize the player list with two players using collection
             // initialization syntax
             playerList = new List<Player>() {
@@ -43,50 +67,7 @@ namespace PlayerManagerMVC
         private void Start()
         {
             // We keep the user's option here
-            string option;
-
-            // Main program loop
-            do
-            {
-                // Show menu and get user option
-                ShowMenu();
-                option = Console.ReadLine();
-
-                // Determine the option specified by the user and act on it
-                switch (option)
-                {
-                    case "1":
-                        InsertPlayer();
-                        break;
-                    case "2":
-                        int listOption;
-                    
-                        Console.WriteLine(
-                            "Ordering options:\n1: Score Descending\n"
-                            +"2: Name Ascending\n3:Name Descending");
-                        
-                        listOption = int.Parse(Console.ReadLine());
-                        ListPlayers(playerList, listOption);
-                        
-                        break;
-                    case "3":
-                        ListPlayersWithScoreGreaterThan();
-                        break;
-                    case "4":
-                        Console.WriteLine("Bye!");
-                        break;
-                    default:
-                        Console.Error.WriteLine("\n>>> Unknown option! <<<\n");
-                        break;
-                }
-
-                // Wait for user to press a key...
-                Console.Write("\nPress any key to continue...");
-                Console.ReadKey(true);
-                Console.WriteLine("\n");
-
-                // Loop keeps going until players choses to quit (option 4)
-            } while (option != "4");
+          
         }
 
         /// <summary>
@@ -94,9 +75,14 @@ namespace PlayerManagerMVC
         /// </summary>
         private void ShowMenu()
         {
-            Console.WriteLine(
-                "Welcome! \n1: Inserir jogador \n2: Listar jogadores "
-                + "\n3: Jogadores com o maior Score \n4: Sair");
+            Console.WriteLine("Menu");
+            Console.WriteLine("----\n");
+            Console.WriteLine("1. Insert player");
+            Console.WriteLine("2. List all players");
+            Console.WriteLine("3. List players with score greater than");
+            Console.WriteLine("4. Sort players");
+            Console.WriteLine("0. Quit\n");
+            Console.Write("Your choice > ");
         }
 
         /// <summary>
@@ -104,30 +90,22 @@ namespace PlayerManagerMVC
         /// </summary>
         private void InsertPlayer()
         {
+            // Variables
             string name;
-            int score = 0;
+            int score;
+            Player newPlayer;
 
-            Console.Write("Insira o Nome: ");
+            // Ask for player info
+            Console.WriteLine("\nInsert player");
+            Console.WriteLine("-------------\n");
+            Console.Write("Name: ");
             name = Console.ReadLine();
+            Console.Write("Score: ");
+            score = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine();
-
-            Console.Write("Insira o Score: ");
-            score = int.Parse(Console.ReadLine());
-
-            Console.WriteLine();
-
-
-            try{
-                playerList.Add(new Player(name, score));
-                Console.WriteLine($"Added {name} with the score {score}");
-
-            }   
-
-            catch (Exception e) {
-                Console.WriteLine(
-                    $"ERRO: Não foi possível adicionar jogador: {e.Message}");
-            }
+            // Create new player and add it to list
+            newPlayer = new Player(name, score);
+            playerList.Add(newPlayer);
         }
 
         /// <summary>
@@ -139,48 +117,17 @@ namespace PlayerManagerMVC
         /// <param name="playersToList">
         /// An enumerable object of players to show.
         /// </param>
-        private static void ListPlayers(IEnumerable<Player> playersToList, int option)
+        private static void ListPlayers(IEnumerable<Player> playersToList)
         {
-            List<Player> playerList = new List<Player>(playersToList);
-            List<Player> playerList2 = new List<Player>(playersToList);
+            Console.WriteLine("\nList of players");
+            Console.WriteLine("-------------\n");
 
-            switch(option)
+            // Show each player in the enumerable object
+            foreach (Player p in playersToList)
             {
-                case 1: 
-                {
-                    playerList.Sort();
-                    playerList.Reverse(); 
-
-                    foreach (Player player in playerList)
-                    {
-                        Console.WriteLine($"{player.Name} {player.Score}");
-                    }
-                    break;
-                }
-
-                case 2:
-                {
-                    IComparer<Player> comp = new CompareByName(true);
-                    playerList.Sort(comp);
-
-                    foreach (Player player in playerList)
-                    {
-                        Console.WriteLine($"{player.Name} {player.Score}");
-                    }
-                    break;
-                }
-                case 3:
-                {
-                    IComparer<Player> comp = new CompareByName(false);
-                    playerList.Sort(comp);
-                    foreach (Player player in playerList)
-                    {
-                        Console.WriteLine($"{player.Name} {player.Score}");
-                    }
-
-                    break;
-                }
+                Console.WriteLine($" -> {p.Name} with a score of {p.Score}");
             }
+            Console.WriteLine();
         }
 
         /// <summary>
@@ -188,16 +135,21 @@ namespace PlayerManagerMVC
         /// </summary>
         private void ListPlayersWithScoreGreaterThan()
         {
-            int minScore = 0;
+            // Minimum score user should have in order to be shown
+            int minScore;
+            // Enumerable of players with score higher than the minimum score
+            IEnumerable<Player> playersWithScoreGreaterThan;
 
-            Console.Write("Insert minimum score: ");
-            minScore = int.Parse(Console.ReadLine());
+            // Ask the user what is the minimum score
+            Console.Write("\nMinimum score player should have? ");
+            minScore = Convert.ToInt32(Console.ReadLine());
 
-            foreach (Player player in GetPlayersWithScoreGreaterThan(minScore))
-            {
-                Console.WriteLine($"{player.Name} {player.Score}");
-            }
+            // Get players with score higher than the user-specified value
+            playersWithScoreGreaterThan =
+                GetPlayersWithScoreGreaterThan(minScore);
 
+            // List all players with score higher than the user-specified value
+            ListPlayers(playersWithScoreGreaterThan);
         }
 
         /// <summary>
@@ -209,12 +161,53 @@ namespace PlayerManagerMVC
         /// </returns>
         private IEnumerable<Player> GetPlayersWithScoreGreaterThan(int minScore)
         {
-            foreach (Player player in playerList) 
+            // Cycle all players in the original player list
+            foreach (Player p in playerList)
             {
-                if (player.Score > minScore)
+                // If the current player has a score higher than the
+                // given value....
+                if (p.Score > minScore)
                 {
-                    yield return player;
+                    // ...return him as a member of the player enumerable
+                    yield return p;
                 }
+            }
+        }
+
+        /// <summary>
+        ///  Sort player list by the order specified by the user.
+        /// </summary>
+        private void SortPlayerList()
+        {
+            PlayerOrder playerOrder;
+
+            Console.WriteLine("Player order");
+            Console.WriteLine("------------");
+            Console.WriteLine(
+                $"{(int)PlayerOrder.ByScore}. Order by score");
+            Console.WriteLine(
+                $"{(int)PlayerOrder.ByName}. Order by name");
+            Console.WriteLine(
+                $"{(int)PlayerOrder.ByNameReverse}. Order by name (reverse)");
+            Console.WriteLine("");
+            Console.Write("> ");
+
+            playerOrder = Enum.Parse<PlayerOrder>(Console.ReadLine());
+
+            switch (playerOrder)
+            {
+                case PlayerOrder.ByScore:
+                    playerList.Sort();
+                    break;
+                case PlayerOrder.ByName:
+                    playerList.Sort(compareByName);
+                    break;
+                case PlayerOrder.ByNameReverse:
+                    playerList.Sort(compareByNameReverse);
+                    break;
+                default:
+                    Console.Error.WriteLine("\n>>> Unknown player order! <<<\n");
+                    break;
             }
         }
     }
